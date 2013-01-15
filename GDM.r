@@ -59,10 +59,18 @@ drawDot <- function(x,y,image) {
 }
 
 ##################################################################
-# Return TRUE if (x,y) is in image, FALSE otherwise
+# Return 0 if (x,y) is in image, otherwise
+#   the abs distance that the dot is over the line (rounded up).
+#
 #  (x,y)  - cartesian relative to (0,0) in centre of image
 ##################################################################
-inBounds <- function(x,y) { return(x^2 + y^2 < radius^2) }
+inBounds <- function(x,y) { 
+    d <- sqrt(x^2 + y^2)
+    if (d < radius) 
+        return(0)
+    else 
+        return(ceiling(abs(d-radius)))
+}
 
 ##################################################################
 # write image to filename as PGM
@@ -98,7 +106,7 @@ savePGM <- function(image, filename, tit) {
 chooseRandomDot <- function() {
     x <- -2 * width
     y <- -2 * height
-    while (!inBounds(x, y)) {
+    while (inBounds(x, y) > 0) {
         x <- runif(1, min=1, max=2*radius) - radius
         y <- runif(1, min=1, max=2*radius) - radius
     }
@@ -133,11 +141,12 @@ writeFrame <- function(dots, fractionSignal, orient, filename) {
         newX <- x + pixelsToMovePerFrame*cos(orientRad)
         newY <- y + pixelsToMovePerFrame*sin(orientRad)
 
-        if (!inBounds(newX, newY)) {
-            dots[[i]] <- chooseRandomDot()
-        } else {
-            dots[[i]] <- c(newX, newY)
+        if (d <- inBounds(newX, newY) > 0) {
+            newO <- atan2(newY, newX) + pi
+            newX <- (radius - max(d, dot_size))*cos(newO)
+            newY <- (radius - max(d, dot_size))*sin(newO)
         }
+        dots[[i]] <- c(newX, newY)
         image <- drawDot(dots[[i]][1],dots[[i]][2],image)
     }
 
