@@ -1,0 +1,48 @@
+Mon 14 Jan 2013 04:17:34 EST
+
+Scripts for generating PBM/PGM images for use in eTASM.
+
+glass.r genreates glass patterns of a given densisty
+Size of image and number of dots are constants at start.
+eg
+    R --slave --args 0.2 c < glass.r   # clockwise
+    R --slave --args 0.2 a < glass.r   # anticlockwise
+as in
+    genGlass.sh
+
+
+RFS.r generates radial frequency search task image.
+Size of image is constant at start.
+eg
+    R --slave --args 8 3 4 30 < RSF.r   # target is RF=3
+    R --slave --args 8 4 4 30 < RSF.r   # no target, all RF=4
+as in
+    genRFS.sh
+
+GDM.r generates Global Dot Motion stimuli as a series of frames.
+Size of image, dots and radius is constant at start.
+For some reason I ran it all in R, so no shell or usage 
+(probably because I was helping Aidan with his maths at the same time).
+
+---------------------------------------------------
+Mon 14 Jan 2013 14:23:12 EST
+
+Now with Allison (back from Jamboree!) 
+Fixing up glass.r
+    1 BUG - draw dot should draw if point <= DOT_SIZE^2
+    2 Need to have correct screen size (pixels and cm)
+    3 make image full width & height of screen (or Lawson's port)
+    4 make stim 10 degrees across
+    5 change task to radial (0 degrees) or concentric (90 degress) 
+      not spiral (45 and 135 degrees) vs none
+
+Fixing up GDM.r
+    1-4 as for glass.r
+    5 change task to what it should be :-)
+    6 don't move dots that will go outside area
+    7 Change genGDM.sh to make n/4 of each of 0,90,180,270 angles
+
+
+Screen size
+    980 * 560 pixels allowing for buttons, etc.
+    Approx : 18.85cm x 10.79cm.
