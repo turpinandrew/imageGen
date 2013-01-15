@@ -5,8 +5,6 @@
 # radius from the centre, then they will still be in the image.
 # (See width, height, radius, AND dot_size globals.)
 #
-# NOTE: WRAP AROUND ONLY WORKS FOR 4 DIRECTIONS (N,E,S,W)
-#
 # Andrew Turpin aturpin@unimelb.edu.au
 # Sat 12 Jan 2013 21:03:56 EST
 # Mon 14 Jan 2013 14:50:23 EST: Modified heavily under Ally's direction
