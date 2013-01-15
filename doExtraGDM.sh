@@ -1,0 +1,78 @@
+#!/bin/bash
+
+rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/GDM
+
+function doit {
+    echo "#!/bin/bash" > xgdm.sh
+    echo "#PBS -l procs=1" >> xgdm.sh
+    echo "#PBS -l walltime=:00:3:00" >> xgdm.sh
+    echo "#PBS -N xgdm" >> xgdm.sh
+    echo "module load R-gcc/2.15.0" >> xgdm.sh
+    echo "$1" >> xgdm.sh
+    qsub -d `pwd` xgdm.sh
+}
+
+rm $rootDir/0.20_001/* ; doit "R --slave --args 0.20 0   $rootDir/0.20_001/ < GDM.r"
+rm $rootDir/0.24_035/* ; doit "R --slave --args 0.24 0   $rootDir/0.24_035/ < GDM.r"
+rm $rootDir/0.20_050/* ; doit "R --slave --args 0.20 90  $rootDir/0.20_050/ < GDM.r"
+rm $rootDir/0.28_052/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_052/ < GDM.r"
+rm $rootDir/0.16_056/* ; doit "R --slave --args 0.16 90  $rootDir/0.16_056/ < GDM.r"
+rm $rootDir/0.28_057/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_057/ < GDM.r"
+rm $rootDir/0.28_058/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_058/ < GDM.r"
+rm $rootDir/0.28_060/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_060/ < GDM.r"
+rm $rootDir/0.28_064/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_064/ < GDM.r"
+rm $rootDir/0.28_066/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_066/ < GDM.r"
+rm $rootDir/0.28_067/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_067/ < GDM.r"
+rm $rootDir/0.08_070/* ; doit "R --slave --args 0.08 90  $rootDir/0.08_070/ < GDM.r"
+rm $rootDir/0.16_071/* ; doit "R --slave --args 0.16 90  $rootDir/0.16_071/ < GDM.r"
+rm $rootDir/0.28_071/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_071/ < GDM.r"
+rm $rootDir/0.28_072/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_072/ < GDM.r"
+rm $rootDir/0.20_073/* ; doit "R --slave --args 0.20 90  $rootDir/0.20_073/ < GDM.r"
+rm $rootDir/0.28_074/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_074/ < GDM.r"
+rm $rootDir/0.24_075/* ; doit "R --slave --args 0.24 90  $rootDir/0.24_075/ < GDM.r"
+rm $rootDir/0.28_075/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_075/ < GDM.r"
+rm $rootDir/0.28_076/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_076/ < GDM.r"
+rm $rootDir/0.16_078/* ; doit "R --slave --args 0.16 90  $rootDir/0.16_078/ < GDM.r"
+rm $rootDir/0.16_084/* ; doit "R --slave --args 0.16 90  $rootDir/0.16_084/ < GDM.r"
+rm $rootDir/0.28_084/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_084/ < GDM.r"
+rm $rootDir/0.16_086/* ; doit "R --slave --args 0.16 90  $rootDir/0.16_086/ < GDM.r"
+rm $rootDir/0.20_087/* ; doit "R --slave --args 0.20 90  $rootDir/0.20_087/ < GDM.r"
+rm $rootDir/0.24_087/* ; doit "R --slave --args 0.24 90  $rootDir/0.24_087/ < GDM.r"
+rm $rootDir/0.28_091/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_091/ < GDM.r"
+rm $rootDir/0.24_092/* ; doit "R --slave --args 0.24 90  $rootDir/0.24_092/ < GDM.r"
+rm $rootDir/0.28_092/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_092/ < GDM.r"
+rm $rootDir/0.28_093/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_093/ < GDM.r"
+rm $rootDir/0.28_095/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_095/ < GDM.r"
+rm $rootDir/0.24_096/* ; doit "R --slave --args 0.24 90  $rootDir/0.24_096/ < GDM.r"
+rm $rootDir/0.28_097/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_097/ < GDM.r"
+rm $rootDir/0.28_098/* ; doit "R --slave --args 0.28 90  $rootDir/0.28_098/ < GDM.r"
+rm $rootDir/0.20_153/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_153/ < GDM.r"
+rm $rootDir/0.16_154/* ; doit "R --slave --args 0.16 270 $rootDir/0.16_154/ < GDM.r"
+rm $rootDir/0.28_156/* ; doit "R --slave --args 0.28 270 $rootDir/0.28_156/ < GDM.r"
+rm $rootDir/0.20_157/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_157/ < GDM.r"
+rm $rootDir/0.24_157/* ; doit "R --slave --args 0.24 270 $rootDir/0.24_157/ < GDM.r"
+rm $rootDir/0.24_158/* ; doit "R --slave --args 0.24 270 $rootDir/0.24_158/ < GDM.r"
+rm $rootDir/0.20_159/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_159/ < GDM.r"
+rm $rootDir/0.28_159/* ; doit "R --slave --args 0.28 270 $rootDir/0.28_159/ < GDM.r"
+rm $rootDir/0.24_160/* ; doit "R --slave --args 0.24 270 $rootDir/0.24_160/ < GDM.r"
+rm $rootDir/0.28_160/* ; doit "R --slave --args 0.28 270 $rootDir/0.28_160/ < GDM.r"
+rm $rootDir/0.20_161/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_161/ < GDM.r"
+rm $rootDir/0.24_161/* ; doit "R --slave --args 0.24 270 $rootDir/0.24_161/ < GDM.r"
+rm $rootDir/0.20_162/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_162/ < GDM.r"
+rm $rootDir/0.28_162/* ; doit "R --slave --args 0.28 270 $rootDir/0.28_162/ < GDM.r"
+rm $rootDir/0.24_169/* ; doit "R --slave --args 0.24 270 $rootDir/0.24_169/ < GDM.r"
+rm $rootDir/0.28_169/* ; doit "R --slave --args 0.28 270 $rootDir/0.28_169/ < GDM.r"
+rm $rootDir/0.20_170/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_170/ < GDM.r"
+rm $rootDir/0.28_174/* ; doit "R --slave --args 0.28 270 $rootDir/0.28_174/ < GDM.r"
+rm $rootDir/0.20_175/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_175/ < GDM.r"
+rm $rootDir/0.28_180/* ; doit "R --slave --args 0.28 270 $rootDir/0.28_180/ < GDM.r"
+rm $rootDir/0.20_181/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_181/ < GDM.r"
+rm $rootDir/0.04_186/* ; doit "R --slave --args 0.04 270 $rootDir/0.04_186/ < GDM.r"
+rm $rootDir/0.20_186/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_186/ < GDM.r"
+rm $rootDir/0.24_188/* ; doit "R --slave --args 0.24 270 $rootDir/0.24_188/ < GDM.r"
+rm $rootDir/0.24_191/* ; doit "R --slave --args 0.24 270 $rootDir/0.24_191/ < GDM.r"
+rm $rootDir/0.28_192/* ; doit "R --slave --args 0.28 270 $rootDir/0.28_192/ < GDM.r"
+rm $rootDir/0.16_195/* ; doit "R --slave --args 0.16 270 $rootDir/0.16_195/ < GDM.r"
+rm $rootDir/0.20_195/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_195/ < GDM.r"
+rm $rootDir/0.20_197/* ; doit "R --slave --args 0.20 270 $rootDir/0.20_197/ < GDM.r"
+rm $rootDir/0.28_198/* ; doit "R --slave --args 0.28 270 $rootDir/0.28_198/ < GDM.r"
