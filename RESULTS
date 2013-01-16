@@ -41,8 +41,39 @@ Fixing up GDM.r
     5 change task to what it should be :-)
     6 don't move dots that will go outside area
     7 Change genGDM.sh to make n/4 of each of 0,90,180,270 angles
-
+    8 wrap around points that go outside radius
 
 Screen size
     980 * 560 pixels allowing for buttons, etc.
     Approx : 18.85cm x 10.79cm.
+
+Tasks
+    GDM1
+        side by side
+        16 frames
+        7 levels + one noise, random side, order
+        20 trials of each
+        "Which one is moving coherently?", s is always correct
+        So 8 sequences: 
+            7 * filenames level_n.*
+            1 * filenames n_n.*
+        Each signal sequence has 0,90,180,270 direction in equal numbers
+        but random sample might not balance. (Ally says OK)
+    GDM2
+        single image
+        8 frames
+        which way is it moving?
+        Correct is angle of direction: 0,90,180,270.
+        So 29 sequences: 
+            7 * filenames level_n.*
+            1 * filenames n_n.*
+
+    Glass
+        side by side
+        single frame
+        7 levels + one noise, random side, order
+        20 trials of each
+        "Which one is radial?"
+        So 8 sequences: 
+            7 * filenames level_n.*
+            1 * filenames n_n.*
