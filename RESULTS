@@ -56,7 +56,7 @@ Tasks
         "Which one is moving coherently?"
         So 8 sequences: 
             7 * filenames level/n.*/frame*
-            1 * filenames 0/n.*/frame*
+            1 * filenames 0.00/n.*/frame*
         Each signal sequence has 0,90,180,270 direction in equal numbers
         but random sample might not balance. (Ally says OK)
     GDM2
@@ -80,3 +80,29 @@ Tasks
         So 8 sequences: 
             7 * filenames level/n.*
             1 * filenames n/n.*
+
+    RFS
+        single image
+        single frames
+        Does this have a target?
+        So 10 sequences: 
+            5 * filenames slevel/n.*
+            5 * filenames nlevel/n.*
+
+Thu 17 Jan 2013 07:04:51 EST
+
+Fixing up RFS.
+
+    The screen area is (2*560) x 980 pixels, 18.7cm x 0.7cm
+
+    Vertical pixel height = 10.7cm / 980 = 0.01091836734693877551
+                   horiz = 18.7cm / 560/2 = 0.01669642857142857142
+
+    We want a round stim of size 1 degree at viewing distance 40cm.
+    A radius of 30 pixels at 40 cm would be 
+        atan2(30*0.013 (say) , 40) = 0.5 degrees 
+    but stretched a little horizontally.
+
+    I will adjust the radius so that it is always 1 degree. Hence
+    it will be a little longer on "horizontal" radii (in
+    pixels), and a little shorter on "vertical" radii (in pixels).

@@ -3,19 +3,28 @@
 # Adapted from David Badcock's Matlab.
 #
 # Fri 11 Jan 2013 08:33:11 EST
+# Modified Thu 17 Jan 2013 07:11:30 EST: allow for aspect ratio of pixels
 #
-
-#WIDTH  <- 980
-#HEIGHT <- 560
 
 WIDTH  <- 752
 HEIGHT <- 752
 
+viewingDistance   <- 40     # cm
+screen.width      <- 980/2  # pixels
+screen.height     <- 560    # pixels
+screenWidthCm     <- 18.7/2 # cm
+screenHeightCm    <- 10.7   # cm
+cmPerPixelWidth  <- screenWidthCm / screen.width 
+cmPerPixelHeight <- screenHeightCm / screen.height
+
 #################################################
 # Create a single RF stim of dimension 128x128
+# Intiially use r in cms, then map back to pixels
+#  radius is in degrees
 #################################################
 rfCreate <- function(RF_number, radius, Weber_amp, phase) {
 
+    radiusCm <- viewingDistance * tan(radius/180*pi)
     SIGMA <- 2 # sigma defines path thickness (Gaussian profile path section)
 
     mod_amp <- Weber_amp*radius # mod amp is the amplitude of the RF modulation
@@ -24,14 +33,15 @@ rfCreate <- function(RF_number, radius, Weber_amp, phase) {
 
         # ?? theta numbers off conventionally from the +ve X axis anti-clockwise
     theta <- apply(xy, 1, function(p) atan2(p[2], p[1]))
-    r     <- apply(xy, 1, function(p) sqrt(sum(p^2)))
+    rCm   <- apply(xy, 1, function(p) sqrt(sum((p * c(cmPerPixelWidth, cmPerPixelHeight))^2)))
      
-        # calculate the RF_radius for all values of theta
-    RF_radius <- radius + sin(RF_number*theta + phase) * mod_amp
+        # calculate the RF_radius for all values of theta (in cm)
+    RF_radiusCm <- radiusCm + sin(RF_number*theta + phase) * mod_amp
 
         # create an RF path with a Gaussian luminance profile in section
-        # maximum luminance when RF_radius-R is equal to zero
-    RF <- exp(-((RF_radius-r)^2/(2*SIGMA^2)))
+        # maximum luminance when RF_radius-r is equal to zero
+    f <- (cmPerPixelHeight + cmPerPixelWidth)/2
+    RF <- exp(-(((RF_radiusCm-rCm)/f)^2/(2*SIGMA^2)))
 
     return(matrix(RF, 128, 128))
 }
@@ -39,6 +49,7 @@ rfCreate <- function(RF_number, radius, Weber_amp, phase) {
 #######################################################
 # function to create a stimulus and reference
 # pass in the RF of the target and distractor and total number of elements 
+#   Radius is in degrees
 #######################################################
 createImage <- function(RF_target, RF_distract, number, Radius, 
                         RF_amp_target=1/(1+RF_target^2), 
@@ -80,7 +91,7 @@ createImage <- function(RF_target, RF_distract, number, Radius,
 
 #############################
 # Test image of mulitple stims
-#i <- createImage(RF_target=3, RF_distract=4, number=8, 30)
+#i <- createImage(RF_target=3, RF_distract=4, number=8, 1)
 #image(i)
 #stop("All good")
 
@@ -105,13 +116,21 @@ printPGM <- function(i, title) {
 }
 
 #######################################################
+# Test
+#i <- createImage(3, 4, 4, 1)
+#image(i)
+#stop("All good")
+
+#######################################################
 # Command line param is 
 #    number of distractors
 #    target RF
 #    distractor RF
 #######################################################
 if (length(commandArgs()) != 7) {
-    print("Usage: R --slave --args number_of_shapes target_RF distractor_RF radius < RSF.r")
+    print("Usage: R --slave --args number_of_shapes target_RF distractor_RF radius < RFS.r")
+    print("where")
+    print("     radius is in degrees (at 40cm viewing distance)")
 } else {
     number       <- as.numeric(commandArgs()[4])
     targetRF     <- as.numeric(commandArgs()[5])
