@@ -24,7 +24,7 @@ do
     for i in $seq
     do
         echo -n " $i"
-        R --slave --args $f a < glass.r > $root/$sDir/s"$f"_"$i".pbm
+        R --slave --args $f a < glass.r > $root/$sDir/"$f"_"$i".pbm
     done
 done
 

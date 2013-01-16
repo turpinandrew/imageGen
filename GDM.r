@@ -132,6 +132,7 @@ writeFrame <- function(dots, fractionSignal, orient, filename) {
     dots <- dots[order(runif(n))]   # randomly order dots
 
         # first move signal dots, wrap around if nec.
+    if (numS > 0)
     for(i in 1:numS) {
         x <- dots[[i]][1]
         y <- dots[[i]][2]
@@ -155,6 +156,7 @@ writeFrame <- function(dots, fractionSignal, orient, filename) {
         y <- dots[[i]][2]
         
         newX <- -2 * width
+        newY <- -2 * height
         while (inBounds(newX, newY) > 0) {
             o <- runif(1, min=0, max=2*pi)
             newX <- x + pixelsToMovePerFrame*cos(o)
