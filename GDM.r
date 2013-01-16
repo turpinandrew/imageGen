@@ -132,35 +132,18 @@ writeFrame <- function(dots, fractionSignal, orient, filename) {
     dots <- dots[order(runif(n))]   # randomly order dots
 
         # first move signal dots, wrap around if nec.
-    if (numS > 0)
-    for(i in 1:numS) {
+    for(i in 1:length(dots)) {
         x <- dots[[i]][1]
         y <- dots[[i]][2]
         
-        newX <- x + pixelsToMovePerFrame*cos(orientRad)
-        newY <- y + pixelsToMovePerFrame*sin(orientRad)
+        o <- ifelse(i <= numS, orientRad, runif(1, min=0, max=2*pi))
+        newX <- x + pixelsToMovePerFrame*cos(o)
+        newY <- y + pixelsToMovePerFrame*sin(o)
 
-        if (d <- inBounds(newX, newY) > 0) {
+        if (d <- inBounds(newX, newY) > 0) {  # wrap around if neccessary
             newO <- atan2(newY, newX) + pi
             newX <- (radius - max(d, dot_size))*cos(newO)
             newY <- (radius - max(d, dot_size))*sin(newO)
-        }
-        dots[[i]] <- c(newX, newY)
-        image <- drawDot(dots[[i]][1],dots[[i]][2],image)
-    }
-
-        # now do random move dots, if out of bounds just chose another dir
-    if (numS < length(dots))
-    for(i in (numS+1):length(dots)) {
-        x <- dots[[i]][1]
-        y <- dots[[i]][2]
-        
-        newX <- -2 * width
-        newY <- -2 * height
-        while (inBounds(newX, newY) > 0) {
-            o <- runif(1, min=0, max=2*pi)
-            newX <- x + pixelsToMovePerFrame*cos(o)
-            newY <- y + pixelsToMovePerFrame*sin(o)
         }
         dots[[i]] <- c(newX, newY)
         image <- drawDot(dots[[i]][1],dots[[i]][2],image)
