@@ -17,8 +17,8 @@ n=50  # number of each level / 4 (reps for 0,90,180,270 degrees)
 ##################################
 # mkdir $root
 ##################################
-\rm -rf $rootDir
-mkdir $rootDir
+#\rm -rf $rootDir
+#mkdir $rootDir
 
 ########################
 # create and submit pbs script
@@ -31,7 +31,7 @@ mkdir $rootDir
 function createScript() {
     echo "#!/bin/bash"                        >  $1
     echo "#PBS -l procs=1"                    >> $1
-    echo "#PBS -l walltime=:00:3:00"          >> $1
+    echo "#PBS -l walltime=:00:6:00"          >> $1
     echo "#PBS -N $2"                         >> $1
     echo "module load R-gcc/2.15.0"           >> $1
     echo "R --slave --args $3 $4 $5  < GDM.r" >> $1
@@ -41,25 +41,25 @@ function createScript() {
 ########################
 # make signal patches
 ########################
-for f in $levels
-do
-    echo ""
-    echo "Doing $f"
-    for o in 0 90 180 270
-    do
-        dirName="$rootDir"/"$f"_"$o"
-        mkdir $dirName
-        seq=`awk 'BEGIN{for(i=0;i<'"$n"'*4;i++) printf"%03d ",i; exit}'`
-        for i in $seq
-        do
-            dirName="$rootDir"/"$f"_"$o"/$i
-            mkdir $dirName
-            echo -n " $dirName"
-        
-            createScript xgdm2.sh xgdm2$f"_"$o"_"$n $f $o $dirName
-        done
-    done
-done
+## for f in $levels
+## do
+##     echo ""
+##     echo "Doing $f"
+##     for o in 0 90 180 270
+##     do
+##         dirName="$rootDir"/"$f"_"$o"
+##         mkdir $dirName
+##         seq=`awk 'BEGIN{for(i=0;i<'"$n"'*4;i++) printf"%03d ",i; exit}'`
+##         for i in $seq
+##         do
+##             dirName="$rootDir"/"$f"_"$o"/$i
+##             mkdir $dirName
+##             echo -n " $dirName"
+##         
+##             createScript xgdm2.sh xgdm2$f"_"$o"_"$n $f $o $dirName
+##         done
+##     done
+## done
 
 ########################
 # make noise patches
