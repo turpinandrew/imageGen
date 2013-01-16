@@ -30,7 +30,7 @@ do
         echo "#PBS -l walltime=:00:10:00" >> xglass.sh
         echo "#PBS -N xglass$f"_"$i" >> xglass.sh
         echo "module load R-gcc/2.15.0" >> xglass.sh
-        echo "R --slave --args $f a < glass.r > $root/$sDir/s"$f"_"$i".pbm" >> xglass.sh
+        echo "R --slave --args $f a < glass.r > $root/$sDir/"$f"_"$i".pbm" >> xglass.sh
         qsub -d `pwd` xglass.sh
     done
 done
