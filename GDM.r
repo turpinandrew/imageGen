@@ -10,7 +10,7 @@
 # Mon 14 Jan 2013 14:50:23 EST: Modified heavily under Ally's direction
 #
 
-NUM_DOTS          <- 100
+NUM_DOTS          <- 50
 BACKGROUND_COLOUR <- 0     # black
 DOT_COLOUR        <- 1     # white
 NUM_FRAMES        <- 16
@@ -57,15 +57,17 @@ drawDot <- function(x,y,image) {
 }
 
 ##################################################################
-# Return TRUE if (x,y) is in image
+# Return 0 if (x,y) is in image, otherwise
+#   the abs distance that the dot is over the line (rounded up).
+#
 #  (x,y)  - cartesian relative to (0,0) in centre of image
 ##################################################################
-inBounds <- function(x,y) {
-    if (width/2  + x - dot_size <= 0)     return(FALSE)
-    if (width/2  + x + dot_size > width)  return(FALSE)
-    if (height/2 + y - dot_size <= 0)     return(FALSE)
-    if (height/2 + y + dot_size > height) return(FALSE)
-    return(TRUE)
+inBounds <- function(x,y) { 
+    d <- sqrt(x^2 + y^2)
+    if (d < radius) 
+        return(0)
+    else 
+        return(ceiling(abs(d-radius)))
 }
 
 ##################################################################
@@ -95,23 +97,24 @@ savePGM <- function(image, filename, tit) {
     cat("\n", file=filename, append=TRUE)
 }
 
+##########################################################
+# Chose a random location inside circle of radius
+# Returns: (x,y) relative to (0,0) in centre of circle
+##########################################################
+chooseRandomDot <- function() {
+    x <- -2 * width
+    y <- -2 * height
+    while (inBounds(x, y) > 0) {
+        x <- runif(1, min=1, max=2*radius) - radius
+        y <- runif(1, min=1, max=2*radius) - radius
+    }
+    return(c(x,y))
+}
+
 ##################################
 # Make initial list of points
 ##################################
-initialDotList <- function() {
-    res <- NULL
-    for(i in 1:NUM_DOTS) {
-            # find an (x,y) within circle
-        dist <- radius*radius + 1
-        while (dist > radius*radius) {
-            x <- runif(1, min=1, max=2*radius) - radius
-            y <- runif(1, min=1, max=2*radius) - radius
-            dist <- x*x + y*y
-        }
-        res <- c(res, list(c(x,y)))
-    }
-    return(res)
-}
+initialDotList <- function() { return(lapply(1:NUM_DOTS, function(i) chooseRandomDot())) }
 
 ########################################################
 # Take in a list of (x,y), move fractionSignal of them
@@ -127,36 +130,38 @@ writeFrame <- function(dots, fractionSignal, orient, filename) {
     image     <- matrix(BACKGROUND_COLOUR, height, width)
 
     dots <- dots[order(runif(n))]   # randomly order dots
-    numberMovedInOrient <- 0
-    for(i in 1:length(dots)) {
+
+        # first move signal dots, wrap around if nec.
+    for(i in 1:numS) {
         x <- dots[[i]][1]
         y <- dots[[i]][2]
-        o <- ifelse(numberMovedInOrient < numS, orientRad, runif(1, min=0, max=2*pi))
         
-        newX <- x + pixelsToMovePerFrame*cos(o)
-        newY <- y + pixelsToMovePerFrame*sin(o)
+        newX <- x + pixelsToMovePerFrame*cos(orientRad)
+        newY <- y + pixelsToMovePerFrame*sin(orientRad)
 
-        if (inBounds(newX, newY)) {
-            dots[[i]] <- c(newX, newY)
-            if (o == orientRad) {
-                #points(newX,newY, col="red", pch=19)
-                numberMovedInOrient <- numberMovedInOrient +1
-            }
-        } else { # choose a new random direction
-            newX <- -2 * width
-            while (!inBounds(newX, newY)) {
-                o <- runif(1, min=0, max=2*pi)
-                newX <- x + pixelsToMovePerFrame*cos(o)
-                newY <- y + pixelsToMovePerFrame*sin(o)
-            }
-            dots[[i]] <- c(newX, newY)
+        if (d <- inBounds(newX, newY) > 0) {
+            newO <- atan2(newY, newX) + pi
+            newX <- (radius - max(d, dot_size))*cos(newO)
+            newY <- (radius - max(d, dot_size))*sin(newO)
         }
-
+        dots[[i]] <- c(newX, newY)
         image <- drawDot(dots[[i]][1],dots[[i]][2],image)
     }
-    if (numberMovedInOrient < numS) {
-      warning(s<-paste("Couldn't generate a frame for", filename))
-      print(s)
+
+        # now do random move dots, if out of bounds just chose another dir
+    if (numS < length(dots))
+    for(i in (numS+1):length(dots)) {
+        x <- dots[[i]][1]
+        y <- dots[[i]][2]
+        
+        newX <- -2 * width
+        while (inBounds(newX, newY) > 0) {
+            o <- runif(1, min=0, max=2*pi)
+            newX <- x + pixelsToMovePerFrame*cos(o)
+            newY <- y + pixelsToMovePerFrame*sin(o)
+        }
+        dots[[i]] <- c(newX, newY)
+        image <- drawDot(dots[[i]][1],dots[[i]][2],image)
     }
 
     savePGM(image, filename=filename,
