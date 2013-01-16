@@ -132,6 +132,7 @@ writeFrame <- function(dots, fractionSignal, orient, filename) {
     dots <- dots[order(runif(n))]   # randomly order dots
 
         # first move signal dots, wrap around if nec.
+    if (numS > 0)
     for(i in 1:numS) {
         x <- dots[[i]][1]
         y <- dots[[i]][2]
