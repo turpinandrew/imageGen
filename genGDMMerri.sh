@@ -32,10 +32,12 @@ for f in $levels
 do
     echo ""
     echo "Doing $f"
+    dirName=$rootDir/$f
+    mkdir $dirName
     seq=`awk 'BEGIN{for(i=0;i<'"$n"'*4;i++) printf"%03d ",i; exit}'`
     for i in $seq
     do
-        dirName="$rootDir"/"$f"_"$i"
+        dirName=$rootDir/$f/$i
         mkdir $dirName
         echo -n " $dirName"
 
