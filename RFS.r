@@ -6,8 +6,10 @@
 # Modified Thu 17 Jan 2013 07:11:30 EST: allow for aspect ratio of pixels
 #
 
-WIDTH  <- 752
-HEIGHT <- 752
+#WIDTH  <- 752
+#HEIGHT <- 752
+WIDTH  <- 480
+HEIGHT <- 480
 
 viewingDistance   <- 40     # cm
 screen.width      <- 980/2  # pixels
@@ -57,7 +59,7 @@ createImage <- function(RF_target, RF_distract, number, Radius,
         # grid of available positions for the RF patterns
         # Random jitter each location
         # Random permute of order
-    xs <- seq(42, 582, 90)
+    xs <- seq(42, WIDTH - 128-42, 90)
     grid<- expand.grid(xs, xs) + matrix(round(runif(2*length(xs),min=-6, max=+6)),ncol=2)
     grid<- grid[order(runif(nrow(grid))), ] 
 
@@ -69,6 +71,8 @@ createImage <- function(RF_target, RF_distract, number, Radius,
     for (i in 1:(number-1)) {
         y <- grid[i, 1]
         x <- grid[i, 2]
+print(i)
+print(grid[i,])
         image[y:(y+127),x:(x+127)] <- image[y:(y+127),x:(x+127)] + 
             rfCreate(RF_distract, Radius, RF_amp_distract, phase[i])
     } 

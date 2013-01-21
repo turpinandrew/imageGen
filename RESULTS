@@ -106,3 +106,21 @@ Fixing up RFS.
     I will adjust the radius so that it is always 1 degree. Hence
     it will be a little longer on "horizontal" radii (in
     pixels), and a little shorter on "vertical" radii (in pixels).
+
+Tue 22 Jan 2013 10:10:07 EST
+
+Alpha test - went shit. image gen took too long.
+To do.
+
+    GDM single - only 8 frames
+    GDM noise - fix
+    Generate more images and convert to png (no root for zip)
+    pad n2 to n%02d etc for RFS
+    Fix size of RFS
+    1 sec timing for GDM
+    practice configs
+    kill GDM with two stimuli
+    Change GDm single image to two buttons, left and right (no up/down).
+    
+    *** check logs - DL to email to me.
+
