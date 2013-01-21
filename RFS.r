@@ -71,8 +71,6 @@ createImage <- function(RF_target, RF_distract, number, Radius,
     for (i in 1:(number-1)) {
         y <- grid[i, 1]
         x <- grid[i, 2]
-print(i)
-print(grid[i,])
         image[y:(y+127),x:(x+127)] <- image[y:(y+127),x:(x+127)] + 
             rfCreate(RF_distract, Radius, RF_amp_distract, phase[i])
     } 

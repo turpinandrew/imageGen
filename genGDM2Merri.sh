@@ -10,7 +10,7 @@
 #
 #
 
-rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/GDM2
+rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/GDM3
 levels="0.04 0.08 0.12 0.16 0.20 0.24 0.28" # 0 == noise
 n=50  # number of each level / 4 (reps for 0,90,180,270 degrees)
 
@@ -34,7 +34,9 @@ function createScript() {
     echo "#PBS -l walltime=:00:6:00"          >> $1
     echo "#PBS -N $2"                         >> $1
     echo "module load R-gcc/2.15.0"           >> $1
+    echo "module load imagemagick/6.6.5-10"   >> $1
     echo "R --slave --args $3 $4 $5  < GDM.r" >> $1
+    echo "mogrify -format png $7            " >> $1
     qsub -d `pwd` $1
 }
 
@@ -66,12 +68,12 @@ function createScript() {
 ########################
 echo ""
 echo "Doing Noise"
-dirName=$rootDir/n
+dirName=$rootDir/noise
 mkdir $dirName
 seq=`awk 'BEGIN{for(i=0;i<'"$n"'*4;i++) printf"%03d ",i; exit}'`
 for i in $seq
 do
-    dirName=$rootDir/n/$i
+    dirName=$rootDir/noise/$i
     mkdir $dirName
     echo -n " $dirName"
     for o in 0 90 180 270
