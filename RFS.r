@@ -8,8 +8,10 @@
 
 #WIDTH  <- 752
 #HEIGHT <- 752
-WIDTH  <- 480
-HEIGHT <- 480
+WIDTH  <- 980
+HEIGHT <- 560
+
+IS <- 100    # small patch is IS * IS. must be even. created in rfCreate.
 
 viewingDistance   <- 40     # cm
 screen.width      <- 980/2  # pixels
@@ -20,7 +22,7 @@ cmPerPixelWidth  <- screenWidthCm / screen.width
 cmPerPixelHeight <- screenHeightCm / screen.height
 
 #################################################
-# Create a single RF stim of dimension 128x128
+# Create a single RF stim of dimension ISxIS
 # Intiially use r in cms, then map back to pixels
 #  radius is in degrees
 #################################################
@@ -31,7 +33,7 @@ rfCreate <- function(RF_number, radius, Weber_amp, phase) {
 
     mod_amp <- Weber_amp*radius # mod amp is the amplitude of the RF modulation
  
-    xy <- expand.grid(-63:64, -63:64)  # X and Y are Cartesian
+    xy <- expand.grid(-(IS/2-1):(IS/2), -(IS/2-1):(IS/2))  # X and Y are Cartesian
 
         # ?? theta numbers off conventionally from the +ve X axis anti-clockwise
     theta <- apply(xy, 1, function(p) atan2(p[2], p[1]))
@@ -45,7 +47,7 @@ rfCreate <- function(RF_number, radius, Weber_amp, phase) {
     f <- (cmPerPixelHeight + cmPerPixelWidth)/2
     RF <- exp(-(((RF_radiusCm-rCm)/f)^2/(2*SIGMA^2)))
 
-    return(matrix(RF, 128, 128))
+    return(matrix(RF, IS, IS))
 }
 
 #######################################################
@@ -56,27 +58,41 @@ rfCreate <- function(RF_number, radius, Weber_amp, phase) {
 createImage <- function(RF_target, RF_distract, number, Radius, 
                         RF_amp_target=1/(1+RF_target^2), 
                         RF_amp_distract=1/(1+RF_distract^2)) {
-        # grid of available positions for the RF patterns
-        # Random jitter each location
+        # Grid of available top-left row/col for the RF patterns
+        # Random +- jitter each location
         # Random permute of order
-    xs <- seq(42, WIDTH - 128-42, 90)
-    grid<- expand.grid(xs, xs) + matrix(round(runif(2*length(xs),min=-6, max=+6)),ncol=2)
-    grid<- grid[order(runif(nrow(grid))), ] 
+    r.jitter <- 18
+    c.jitter <- 11
+    rs <- seq(r.jitter+1, HEIGHT - IS - r.jitter, IS+2*r.jitter)
+    cs <- seq(c.jitter+1, WIDTH  - IS - c.jitter, IS+2*c.jitter)
+    grid <- expand.grid(cs, rs) 
+    grid[,1] <- grid[,1] + round(runif(nrow(grid),min=-c.jitter, max=+c.jitter))
+    grid[,2] <- grid[,2] + round(runif(nrow(grid),min=-r.jitter, max=+r.jitter))
+    grid <- grid[order(runif(nrow(grid))), ] 
+plot(grid, xlim=c(1,WIDTH), ylim=c(1, HEIGHT))
+for(i in 1:nrow(grid)) {
+    cc <- grid[i,1]
+    rr <- grid[i,2]
+    polygon(c(cc, cc+IS, cc+IS, cc), c(rr,rr,rr+IS,rr+IS))
+}
+
+    if (nrow(grid) < number)
+        warning("Cannot fit that many targets")
 
     phase <- 2*pi*runif(number, min=1,max=49)
 
-    image <- matrix(0, HEIGHT, WIDTH)
+    image <- matrix(0, nrow=HEIGHT, ncol=WIDTH)
 
     #add each RF pattern in turn to stim and ref  
     for (i in 1:(number-1)) {
-        y <- grid[i, 1]
-        x <- grid[i, 2]
-        image[y:(y+127),x:(x+127)] <- image[y:(y+127),x:(x+127)] + 
+        x <- grid[i, 1]
+        y <- grid[i, 2]
+        image[y:(y+(IS-1)),x:(x+(IS-1))] <- image[y:(y+(IS-1)),x:(x+(IS-1))] + 
             rfCreate(RF_distract, Radius, RF_amp_distract, phase[i])
     } 
-    y <- grid[number, 1]  # add target 
-    x <- grid[number, 2]
-    image[y:(y+127),x:(x+127)] <- image[y:(y+127),x:(x+127)] + 
+    x <- grid[number, 1]  # add target 
+    y <- grid[number, 2]
+    image[y:(y+(IS-1)),x:(x+(IS-1))] <- image[y:(y+(IS-1)),x:(x+(IS-1))] + 
         rfCreate(RF_target, Radius, RF_amp_target, phase[number])
 
     too_big <- which(image > 1)
@@ -84,18 +100,6 @@ createImage <- function(RF_target, RF_distract, number, Radius,
 
     return(image)
 }
-
-#############################
-# Test single stim
-#s1 <- rfCreate(4, 30, 1/(1+5^2), 2*pi*runif(1,min=1,max=49))
-#image(round(255*s1), col=grey.colors(256))
-#stop("All good")
-
-#############################
-# Test image of mulitple stims
-#i <- createImage(RF_target=3, RF_distract=4, number=8, 1)
-#image(i)
-#stop("All good")
 
 ##################################################################
 # print matrix as a 8-bit pbm file
@@ -119,9 +123,9 @@ printPGM <- function(i, title) {
 
 #######################################################
 # Test
-#i <- createImage(3, 4, 4, 1)
-#image(i)
-#stop("All good")
+i <- createImage(3, 4, 32, 1)
+image(t(i))
+stop("All good")
 
 #######################################################
 # Command line param is 

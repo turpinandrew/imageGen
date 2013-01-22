@@ -112,6 +112,7 @@ Tue 22 Jan 2013 10:10:07 EST
 Alpha test - went shit. image gen took too long.
 To do.
 
+    Must name noise dir "noise" for AFC
     GDM single - only 8 frames
     GDM noise - fix
     Generate more images and convert to png (no root for zip)
