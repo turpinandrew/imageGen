@@ -69,12 +69,12 @@ createImage <- function(RF_target, RF_distract, number, Radius,
     grid[,1] <- grid[,1] + round(runif(nrow(grid),min=-c.jitter, max=+c.jitter))
     grid[,2] <- grid[,2] + round(runif(nrow(grid),min=-r.jitter, max=+r.jitter))
     grid <- grid[order(runif(nrow(grid))), ] 
-plot(grid, xlim=c(1,WIDTH), ylim=c(1, HEIGHT))
-for(i in 1:nrow(grid)) {
-    cc <- grid[i,1]
-    rr <- grid[i,2]
-    polygon(c(cc, cc+IS, cc+IS, cc), c(rr,rr,rr+IS,rr+IS))
-}
+#plot(grid, xlim=c(1,WIDTH), ylim=c(1, HEIGHT))
+#for(i in 1:nrow(grid)) {
+#    cc <- grid[i,1]
+#    rr <- grid[i,2]
+#    polygon(c(cc, cc+IS, cc+IS, cc), c(rr,rr,rr+IS,rr+IS))
+#}
 
     if (nrow(grid) < number)
         warning("Cannot fit that many targets")
@@ -110,8 +110,8 @@ printPGM <- function(i, title) {
     cat(paste(WIDTH, HEIGHT), "\n")
     cat("255\n")
     c <- 1
-    for(x in 1:WIDTH) 
-        for(y in 1:HEIGHT) {
+    for(y in 1:HEIGHT) {
+        for(x in 1:WIDTH) 
             cat(round(255*i[y,x]), " ")
             if (c == 30) {
                 cat("\n")
@@ -123,9 +123,9 @@ printPGM <- function(i, title) {
 
 #######################################################
 # Test
-i <- createImage(3, 4, 32, 1)
-image(t(i))
-stop("All good")
+#i <- createImage(3, 4, 2, 1)
+#image(t(i))
+#stop("All good")
 
 #######################################################
 # Command line param is 
