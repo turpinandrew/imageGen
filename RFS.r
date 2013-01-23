@@ -81,7 +81,7 @@ createImage <- function(RF_target, RF_distract, number, Radius,
 
     phase <- 2*pi*runif(number, min=1,max=49)
 
-    image <- matrix(0, nrow=HEIGHT, ncol=WIDTH)
+    image <- matrix(0.5, nrow=HEIGHT, ncol=WIDTH)
 
     #add each RF pattern in turn to stim and ref  
     for (i in 1:(number-1)) {
@@ -123,9 +123,9 @@ printPGM <- function(i, title) {
 
 #######################################################
 # Test
-i <- createImage(3, 4, 2, 1)
-image(t(i))
-stop("All good")
+#i <- createImage(3, 4, 2, 1)
+#image(t(i))
+#stop("All good")
 
 #######################################################
 # Command line param is 

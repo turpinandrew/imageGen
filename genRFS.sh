@@ -1,9 +1,9 @@
 #!/bin/bash
 
-rootDir=RFS_wide
+rootDir=RFS_wide_grey
 
-n=40
-seq=`awk 'BEGIN{for(i=21;i<='"$n"';i++) print i; exit}'`
+n=1
+seq=`awk 'BEGIN{for(i=1;i<='"$n"';i++) print i; exit}'`
 levels="02 04 08 16 32"
 
 #####################################################

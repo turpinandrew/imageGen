@@ -138,3 +138,7 @@ TODO
     - in gdm3 (on merri) check all noise images
     - generate some easy practice images for Glass 
     - generate some easy practice images for GDM3 
+
+Wed 23 Jan 2013 16:41:50 EST
+
+Changed RFS.r to grey background and amplitude in cm.
