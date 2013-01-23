@@ -131,3 +131,10 @@ Tue 22 Jan 2013 22:08:09 EST
 Fixed RFS so that 32 targets can fit on iPad screen dimensions.
     RFS.r
 
+Wed 23 Jan 2013 09:40:40 EST
+
+TODO
+    - in gdm3 (on merri) remove all frames > 8
+    - in gdm3 (on merri) check all noise images
+    - generate some easy practice images for Glass 
+    - generate some easy practice images for GDM3 

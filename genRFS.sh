@@ -1,10 +1,10 @@
 #!/bin/bash
 
-rootDir=RFS
+rootDir=RFS_wide
 
-n=9
-seq=`awk 'BEGIN{for(i=1;i<='"$n"';i++) print i; exit}'`
-levels="2 4 8 16 32"
+n=40
+seq=`awk 'BEGIN{for(i=21;i<='"$n"';i++) print i; exit}'`
+levels="02 04 08 16 32"
 
 #####################################################
 # make n*|levels| signal and distractor patches
@@ -15,7 +15,16 @@ do
     for j in $levels
     do
         echo -n " $j"
-        R --slave --args $j 3 4 30 < RFS.r > $rootDir/s"$j"_"$i".pgm &
-        R --slave --args $j 4 4 30 < RFS.r > $rootDir/n"$j"_"$i".pgm 
+        R --slave --args $j 3 4 1 < RFS.r > $rootDir/s"$j"_"$i".pgm # &
+        w="$!"
+        R --slave --args $j 4 4 1 < RFS.r > $rootDir/n"$j"_"$i".pgm 
+        wait $w
+
+        mogrify -format png $rootDir/s"$j"_"$i".pgm # &
+        w="$!"
+        mogrify -format png $rootDir/n"$j"_"$i".pgm 
+        wait $w
+
+        rm $rootDir/*.pgm
     done
 done
