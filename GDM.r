@@ -13,7 +13,7 @@
 NUM_DOTS          <- 50
 BACKGROUND_COLOUR <- 0     # black
 DOT_COLOUR        <- 1     # white
-NUM_FRAMES        <- 16
+NUM_FRAMES        <- 8
 
 FRAME_RATE       <- 50/1000  # seconds (per frame)
 VIEWING_DISTANCE <- 40       # cm

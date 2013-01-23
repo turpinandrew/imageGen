@@ -9,10 +9,14 @@
 #       1 * filenames n/n.*/frame*
 #
 #
+# Modified Wed Jan 23 2013: Just 0 and 180
+#
 
 rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/GDM3
-levels="0.04 0.08 0.12 0.16 0.20 0.24 0.28" # 0 == noise
-n=50  # number of each level / 4 (reps for 0,90,180,270 degrees)
+#rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/GDM3
+levels="0.00 0.04 0.08 0.12 0.16 0.20 0.24 0.28" # 0 == noise
+levels="0.50" #  0.80" # practce
+n=3  # number of each level / 4 (reps for 0,90,180,270 degrees)
 
 ##################################
 # mkdir $root
@@ -43,41 +47,22 @@ function createScript() {
 ########################
 # make signal patches
 ########################
-## for f in $levels
-## do
-##     echo ""
-##     echo "Doing $f"
-##     for o in 0 90 180 270
-##     do
-##         dirName="$rootDir"/"$f"_"$o"
-##         mkdir $dirName
-##         seq=`awk 'BEGIN{for(i=0;i<'"$n"'*4;i++) printf"%03d ",i; exit}'`
-##         for i in $seq
-##         do
-##             dirName="$rootDir"/"$f"_"$o"/$i
-##             mkdir $dirName
-##             echo -n " $dirName"
-##         
-##             createScript xgdm2.sh xgdm2$f"_"$o"_"$n $f $o $dirName
-##         done
-##     done
-## done
-
-########################
-# make noise patches
-########################
-echo ""
-echo "Doing Noise"
-dirName=$rootDir/noise
-mkdir $dirName
-seq=`awk 'BEGIN{for(i=0;i<'"$n"'*4;i++) printf"%03d ",i; exit}'`
-for i in $seq
+for f in $levels
 do
-    dirName=$rootDir/noise/$i
-    mkdir $dirName
-    echo -n " $dirName"
-    for o in 0 90 180 270
+    echo ""
+    echo "Doing $f"
+    for o in 0 180  # for o in 0 90 180 270
     do
-        createScript xgdm2.sh xgdm2n"_"$o"_"$i 0 $o $dirName
+        dirName="$rootDir"/"$f"_"$o"
+        mkdir $dirName
+        seq=`awk 'BEGIN{for(i=0;i<'"$n"'*4;i++) printf"%03d ",i; exit}'`
+        for i in $seq
+        do
+            dirName="$rootDir"/"$f"_"$o"/$i
+            mkdir $dirName
+            echo -n " $dirName"
+        
+            createScript xgdm2.sh xgdm2$f"_"$o"_"$n $f $o $dirName
+        done
     done
 done
