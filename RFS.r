@@ -31,7 +31,7 @@ rfCreate <- function(RF_number, radius, Weber_amp, phase) {
     radiusCm <- viewingDistance * tan(radius/180*pi)
     SIGMA <- 2 # sigma defines path thickness (Gaussian profile path section)
 
-    mod_amp <- Weber_amp*radius # mod amp is the amplitude of the RF modulation
+    mod_amp <- Weber_amp*radiusCm  # mod amp is the amplitude of the RF modulation
  
     xy <- expand.grid(-(IS/2-1):(IS/2), -(IS/2-1):(IS/2))  # X and Y are Cartesian
 
@@ -123,9 +123,9 @@ printPGM <- function(i, title) {
 
 #######################################################
 # Test
-#i <- createImage(3, 4, 2, 1)
-#image(t(i))
-#stop("All good")
+i <- createImage(3, 4, 2, 1)
+image(t(i))
+stop("All good")
 
 #######################################################
 # Command line param is 
