@@ -154,14 +154,14 @@ printPBM <- function(i, fractionSignal, orient) {
 ##################################################################
 # Main
 ##################################################################
-if (length(commandArgs()) != 5) {
-    print("Usage: R --slave --args fraction c|a < glass.r")
+if (length(commandArgs()) != 6) {
+    print("Usage: R --slave --args fraction c|a number < glass.r")
     print("       c = concentric, a = radial")
-    print("       Produces PBM file to stdout")
+    print("       Produces one PBM file containing number to stdout")
 } else {
     fractionSignal <- as.numeric(commandArgs()[4])
     orient         <- ifelse(commandArgs()[5]=='c',CLOCKWISE,ANTI_CLOCKWISE)
-    i <- drawCanvas(fractionSignal * NUM_DOTS, orient, 50)
+    i <- drawCanvas(fractionSignal * NUM_DOTS, orient, as.numeric(commandArgs()[6]))
 
     # border for testing size
 #    for(x in 1:WIDTH)
