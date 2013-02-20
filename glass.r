@@ -102,11 +102,15 @@ drawNoiseDots <- function(numNoiseDots,image) {
 ##################################################################
 # Draw the Canvas
 ##################################################################
-drawCanvas <- function(numDotsAsSignal, orient) {
-    image <- matrix(BACKGROUND_COLOUR, ncol=WIDTH, nrow=HEIGHT)
+drawCanvas <- function(numDotsAsSignal, orient, numberRepeats=1) {
+    image <- matrix(BACKGROUND_COLOUR, ncol=WIDTH * numberRepeats, nrow=HEIGHT)
 
-    image <- drawSignalPairs(numDotsAsSignal/2, orient, image)
-    image <- drawNoiseDots(NUM_DOTS - numDotsAsSignal, image)
+    for( i in 1:numberRepeats) {
+        x <- 1:HEIGHT
+        y <- ((i-1)*WIDTH):(i*WIDTH)
+        image[x,y] <- drawSignalPairs(numDotsAsSignal/2, orient,  image[x,y])
+        image[x,y] <- drawNoiseDots  (NUM_DOTS - numDotsAsSignal, image[x,y])
+    }
 
     return(image)
 }
@@ -126,10 +130,10 @@ printPBM <- function(i, fractionSignal, orient) {
   # }
     cat("P1", "\n")
     cat(paste("# Glass: ",fractionSignal, orient), "\n")
-    cat(paste(WIDTH, HEIGHT), "\n")
+    cat(paste(ncol(i), nrow(i)), "\n")
     c <- 1
-    for(y in 1:HEIGHT) 
-        for(x in 1:WIDTH) {
+    for(y in 1:nrow(i)) 
+        for(x in 1:ncol(i)) {
             cat(ifelse(i[y,x] == BACKGROUND_COLOUR, 1, 0)," ")  # 0 is black, I guess?
             if (c == 30) {
                 cat("\n")
@@ -152,10 +156,12 @@ printPBM <- function(i, fractionSignal, orient) {
 ##################################################################
 if (length(commandArgs()) != 5) {
     print("Usage: R --slave --args fraction c|a < glass.r")
+    print("       c = concentric, a = radial")
+    print("       Produces PBM file to stdout")
 } else {
     fractionSignal <- as.numeric(commandArgs()[4])
     orient         <- ifelse(commandArgs()[5]=='c',CLOCKWISE,ANTI_CLOCKWISE)
-    i <- drawCanvas(fractionSignal * NUM_DOTS, orient)
+    i <- drawCanvas(fractionSignal * NUM_DOTS, orient, 50)
 
     # border for testing size
 #    for(x in 1:WIDTH)
