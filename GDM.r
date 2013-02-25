@@ -8,6 +8,7 @@
 # Andrew Turpin aturpin@unimelb.edu.au
 # Sat 12 Jan 2013 21:03:56 EST
 # Mon 14 Jan 2013 14:50:23 EST: Modified heavily under Ally's direction
+# Mon Feb 25 20:08:32 EST 2013: Changed to big image: repeats across, frames down.
 #
 
 NUM_DOTS          <- 50
@@ -118,11 +119,11 @@ initialDotList <- function() { return(lapply(1:NUM_DOTS, function(i) chooseRando
 
 ########################################################
 # Take in a list of (x,y), move fractionSignal of them
-# in direction orient, and write an image with name filename
+# in direction orient, and print raster to stdout
 # fractionSignal - b/w 0 and 1
 # orient - degrees.
 ########################################################
-writeFrame <- function(dots, fractionSignal, orient, filename) {
+writeFrame <- function(dots, fractionSignal, orient) {
     orientRad <- orient*pi/180
     n         <- length(dots)
     numS      <- round(fractionSignal * n)
@@ -149,8 +150,7 @@ writeFrame <- function(dots, fractionSignal, orient, filename) {
         image <- drawDot(dots[[i]][1],dots[[i]][2],image)
     }
 
-    savePGM(image, filename=filename,
-            tit=sprintf("numDots=%3.0f fraction signal=%5.3f orient=%3.0f",n, numS, orient))
+    printPGM(image)
 
     return(dots)
 }
@@ -164,12 +164,13 @@ writeFrame <- function(dots, fractionSignal, orient, filename) {
 #dots <- writeFrame(dots, 0.5, 45, filename=paste("x.pbm"))
 #stop("All good")
 
-if (length(commandArgs()) != 6) {
-    print("Usage: R --slave --args fraction angle_of_motion dirPrefix < GDM.r")
+if (length(commandArgs()) != 7) {
+    print("Usage: R --slave --args fraction angle_of_motion dirPrefix numRepeats < GDM.r")
 } else {
     fractionSignal <- as.numeric(commandArgs()[4])
     orient         <- as.numeric(commandArgs()[5])
     dirPrefix      <- commandArgs()[6]
+    numberRepeats  <- as.numeric(commandArgs()[7])
 
     dots <- initialDotList()
     for(frame in 1:NUM_FRAMES) 

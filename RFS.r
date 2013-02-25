@@ -103,17 +103,22 @@ createImage <- function(RF_target, RF_distract, number, Radius,
 # print matrix as a 8-bit pbm file
 ##################################################################
 printPGM <- function(i, title) {
+    cat("P2", "\n")
+    cat("# RSF: ",title, "\n")
+    #cat(WIDTH * num_images, " ", HEIGHT, "\n")
+    #cat(HEIGHT, " ", WIDTH * num_images, "\n")
+    cat(ncol(i), " ", nrow(i), "\n")
+    cat("255\n")
     c <- 1
-    for(y in 1:nrow(i)) {
-        for(x in 1:ncol(i)) 
+    for(y in 1:nrow(i)) 
+        for(x in 1:ncol(i)) {
             cat(round(255*i[y,x]), " ")
+            c <- c + 1
             if (c == 19) {
                 cat("\n")
                 c <- 0
             }
-            c <- c + 1
         }
-    cat("\n")
 }
 
 #######################################################
@@ -139,15 +144,12 @@ if (length(commandArgs()) != 8) {
     radius       <- as.numeric(commandArgs()[7])
     num_images   <- as.numeric(commandArgs()[8])
 
-    cat("P2", "\n")
-    cat("# RSF: ",commandArgs(), "\n")
-    cat(WIDTH * num_images, " ", HEIGHT, "\n")
-    cat("255\n")
-
+    fatty <- matrix(NA, HEIGHT, WIDTH * num_images)
     for (i in 1:num_images) {
       im <- createImage(RF_target=targetRF, RF_distract=distractorRF, number=number, Radius=radius)
-      printPGM(im, commandArgs())
+      fatty[1:HEIGHT, (1 + WIDTH*(i-1)):(i*WIDTH)] <- im
     }
+    printPGM(fatty, commandArgs())
 }
 
 if (grep("package:Rmpi",search()) != 0)

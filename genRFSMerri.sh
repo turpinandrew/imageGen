@@ -3,13 +3,14 @@
 
 #rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/RFS_Aspect  # Jan 2013
 #rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/RFS_Wide    # Jan 2013
-rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/RFS_bigImage # Mon Feb 25 16:15:10 EST 2013
+#rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/RFS_bigImage # Mon Feb 25 16:15:10 EST 2013
+rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/RFS_bigImage2 # Mon Feb 25 21:56:36 EST 2013
 
 \rm -rf $rootDir
 mkdir $rootDir
 
-n=200
-levels="02 04 08 16 32"
+n=100
+levels="32 16 08 04 02"
 
 ########################
 # create and submit pbs script
