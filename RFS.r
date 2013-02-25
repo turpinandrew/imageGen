@@ -4,7 +4,7 @@
 #
 # Fri 11 Jan 2013 08:33:11 EST
 # Modified Thu 17 Jan 2013 07:11:30 EST: allow for aspect ratio of pixels
-#
+#          Mon Feb 25 16:01:10 EST 2013: concatenate multiples into big image
 
 #WIDTH  <- 752
 #HEIGHT <- 752
@@ -51,9 +51,12 @@ rfCreate <- function(RF_number, radius, Weber_amp, phase) {
 }
 
 #######################################################
-# function to create a stimulus and reference
-# pass in the RF of the target and distractor and total number of elements 
+# Function to create a stimulus and reference
+# Pass in the RF of the target and distractor and total number of elements 
 #   Radius is in degrees
+# Creates one long image of 
+#  width = WIDTH * numberRepeats
+#  height = HEIGHT
 #######################################################
 createImage <- function(RF_target, RF_distract, number, Radius, 
                         RF_amp_target=1/(1+RF_target^2), 
@@ -66,18 +69,13 @@ createImage <- function(RF_target, RF_distract, number, Radius,
     rs <- seq(r.jitter+1, HEIGHT - IS - r.jitter, IS+2*r.jitter)
     cs <- seq(c.jitter+1, WIDTH  - IS - c.jitter, IS+2*c.jitter)
     grid <- expand.grid(cs, rs) 
-    grid[,1] <- grid[,1] + round(runif(nrow(grid),min=-c.jitter, max=+c.jitter))
-    grid[,2] <- grid[,2] + round(runif(nrow(grid),min=-r.jitter, max=+r.jitter))
-    grid <- grid[order(runif(nrow(grid))), ] 
-#plot(grid, xlim=c(1,WIDTH), ylim=c(1, HEIGHT))
-#for(i in 1:nrow(grid)) {
-#    cc <- grid[i,1]
-#    rr <- grid[i,2]
-#    polygon(c(cc, cc+IS, cc+IS, cc), c(rr,rr,rr+IS,rr+IS))
-#}
 
     if (nrow(grid) < number)
         warning("Cannot fit that many targets")
+
+    grid[,1] <- grid[,1] + round(runif(nrow(grid),min=-c.jitter, max=+c.jitter))
+    grid[,2] <- grid[,2] + round(runif(nrow(grid),min=-r.jitter, max=+r.jitter))
+    grid <- grid[order(runif(nrow(grid))), ] 
 
     phase <- 2*pi*runif(number, min=1,max=49)
 
@@ -105,20 +103,17 @@ createImage <- function(RF_target, RF_distract, number, Radius,
 # print matrix as a 8-bit pbm file
 ##################################################################
 printPGM <- function(i, title) {
-    cat("P2", "\n")
-    cat("# RSF: ", title, "\n")
-    cat(paste(WIDTH, HEIGHT), "\n")
-    cat("255\n")
     c <- 1
-    for(y in 1:HEIGHT) {
-        for(x in 1:WIDTH) 
+    for(y in 1:nrow(i)) {
+        for(x in 1:ncol(i)) 
             cat(round(255*i[y,x]), " ")
-            if (c == 30) {
+            if (c == 19) {
                 cat("\n")
                 c <- 0
             }
             c <- c + 1
         }
+    cat("\n")
 }
 
 #######################################################
@@ -133,8 +128,8 @@ printPGM <- function(i, title) {
 #    target RF
 #    distractor RF
 #######################################################
-if (length(commandArgs()) != 7) {
-    print("Usage: R --slave --args number_of_shapes target_RF distractor_RF radius < RFS.r")
+if (length(commandArgs()) != 8) {
+    print("Usage: R --slave --args number_of_shapes target_RF distractor_RF radius num_images < RFS.r")
     print("where")
     print("     radius is in degrees (at 40cm viewing distance)")
 } else {
@@ -142,8 +137,18 @@ if (length(commandArgs()) != 7) {
     targetRF     <- as.numeric(commandArgs()[5])
     distractorRF <- as.numeric(commandArgs()[6])
     radius       <- as.numeric(commandArgs()[7])
+    num_images   <- as.numeric(commandArgs()[8])
 
-    i <- createImage(RF_target=targetRF, RF_distract=distractorRF, number=number, radius)
+    cat("P2", "\n")
+    cat("# RSF: ",commandArgs(), "\n")
+    cat(WIDTH * num_images, " ", HEIGHT, "\n")
+    cat("255\n")
 
-    printPGM(i, commandArgs())
+    for (i in 1:num_images) {
+      im <- createImage(RF_target=targetRF, RF_distract=distractorRF, number=number, Radius=radius)
+      printPGM(im, commandArgs())
+    }
 }
+
+if (grep("package:Rmpi",search()) != 0)
+   mpi.quit()

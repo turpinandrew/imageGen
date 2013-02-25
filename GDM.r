@@ -175,3 +175,7 @@ if (length(commandArgs()) != 6) {
     for(frame in 1:NUM_FRAMES) 
         dots <- writeFrame(dots, fractionSignal, orient, filename=paste(dirPrefix,"/frame_",frame,".pbm",sep=""))
 }
+
+if (grep("package:Rmpi",search()) != 0)
+   mpi.quit()
+

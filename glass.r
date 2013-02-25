@@ -101,13 +101,14 @@ drawNoiseDots <- function(numNoiseDots,image) {
 
 ##################################################################
 # Draw the Canvas
+# of width WIDTH * numberRepeats, height HEIGHT.
 ##################################################################
 drawCanvas <- function(numDotsAsSignal, orient, numberRepeats=1) {
     image <- matrix(BACKGROUND_COLOUR, ncol=WIDTH * numberRepeats, nrow=HEIGHT)
 
     for( i in 1:numberRepeats) {
         x <- 1:HEIGHT
-        y <- ((i-1)*WIDTH):(i*WIDTH)
+        y <- (1 + ((i-1)*WIDTH)):(i*WIDTH)
         image[x,y] <- drawSignalPairs(numDotsAsSignal/2, orient,  image[x,y])
         image[x,y] <- drawNoiseDots  (NUM_DOTS - numDotsAsSignal, image[x,y])
     }
@@ -171,3 +172,6 @@ if (length(commandArgs()) != 6) {
 
     printPBM(i, fractionSignal, orient)
 }
+
+if (grep("package:Rmpi",search()) != 0)
+   mpi.quit()
