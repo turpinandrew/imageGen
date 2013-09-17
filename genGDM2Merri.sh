@@ -1,28 +1,26 @@
 #!/bin/bash
 
 #
-# For single image GDM, so 29 folders.
-#       7 * filenames level_0/n.*/frame*
-#       7 * filenames level_90/n.*/frame*
-#       7 * filenames level_180/n.*/frame*
-#       7 * filenames level_270/n.*/frame*
-#       1 * filenames n/n.*/frame*
-#
-#
 # Modified Wed Jan 23 2013: Just 0 and 180
+# Modified Mon Sep 16 2013: new folder naming scheme
 #
 
-rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/GDM3
+rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/GDM4
 #rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/GDM3
-levels="0.00 0.04 0.08 0.12 0.16 0.20 0.24 0.28" # 0 == noise
-levels="0.50" #  0.80" # practce
-n=3  # number of each level / 4 (reps for 0,90,180,270 degrees)
+#rootDir=/vlsci/VR0052/aturpin/doc/papers/merp/src/imageGen/GDM3
+#levels="0.00 0.04 0.08 0.12 0.16 0.20 0.24 0.28" # 0 == noise
+#levels="0.50" #  0.80" # practce
+#levels="0 50 100" #  0.80" # practce
+levels=`echo {0..100..2}`
+
+echo "Levels $levels"
+n=8  # number of each level / 4 (reps for 0,90,180,270 degrees)
 
 ##################################
 # mkdir $root
 ##################################
-#\rm -rf $rootDir
-#mkdir $rootDir
+\rm -rf $rootDir
+mkdir $rootDir
 
 ########################
 # create and submit pbs script
@@ -33,15 +31,17 @@ n=3  # number of each level / 4 (reps for 0,90,180,270 degrees)
 #   $5 == dirname for output
 ########################
 function createScript() {
-    echo "#!/bin/bash"                        >  $1
-    echo "#PBS -l procs=1"                    >> $1
-    echo "#PBS -l walltime=:00:6:00"          >> $1
-    echo "#PBS -N $2"                         >> $1
-    echo "module load R-gcc/2.15.0"           >> $1
-    echo "module load imagemagick/6.6.5-10"   >> $1
-    echo "R --slave --args $3 $4 $5  < GDM.r" >> $1
-    echo "mogrify -format png $7            " >> $1
-    qsub -d `pwd` $1
+
+    echo "#!/bin/bash"                             >  $1
+    echo "#SBATCH --time=6:00"                     >> $1
+    echo "#SBATCH --job-name=\"$2\""               >> $1
+    echo "#SBATCH --account=\"VR0280\""            >> $1
+    echo "#SBATCH --ntasks=1"                      >> $1
+    echo "module load R-intel/2.15.3"              >> $1
+    echo "module load imagemagick-intel/6.8.6-9"   >> $1
+    echo "R --slave --args $3 $4 $5 1 < GDM.r"     >> $1
+    #echo "mogrify -format png $5/*.pbm"            >> $1
+    sbatch $1
 }
 
 ########################
@@ -49,20 +49,24 @@ function createScript() {
 ########################
 for f in $levels
 do
-    echo ""
+    dirName="$rootDir/$f"
+    mkdir $dirName
     echo "Doing $f"
     for o in 0 180  # for o in 0 90 180 270
     do
-        dirName="$rootDir"/"$f"_"$o"
-        mkdir $dirName
-        seq=`awk 'BEGIN{for(i=0;i<'"$n"'*4;i++) printf"%03d ",i; exit}'`
+        seq=`awk 'BEGIN{for(i=0;i<'"$n"';i++) printf"%3d ",i; exit}'`
         for i in $seq
         do
-            dirName="$rootDir"/"$f"_"$o"/$i
+            if [ $o = 0 ]
+            then
+               dirName="$rootDir/$f/1_"$i
+            else
+               dirName="$rootDir/$f/2_"$i
+            fi
             mkdir $dirName
             echo -n " $dirName"
         
-            createScript xgdm2.sh xgdm2$f"_"$o"_"$n $f $o $dirName
+            createScript xgdm2.sh xgdm2$f"_"$o"_"$n `echo $f/100.0 | bc -l`  $o $dirName
         done
     done
 done

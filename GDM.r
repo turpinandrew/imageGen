@@ -11,7 +11,7 @@
 # Mon Feb 25 20:08:32 EST 2013: Changed to big image: repeats across, frames down.
 #
 
-NUM_DOTS          <- 50
+NUM_DOTS          <- 100
 BACKGROUND_COLOUR <- 0     # black
 DOT_COLOUR        <- 1     # white
 NUM_FRAMES        <- 8
@@ -19,8 +19,8 @@ NUM_FRAMES        <- 8
 FRAME_RATE       <- 50/1000  # seconds (per frame)
 VIEWING_DISTANCE <- 40       # cm
 STIM_DIAMETER    <- 10.0     # degrees
-DOT_DIAMETER     <-  8.6     # degrees
-DOT_SPEED        <- 5.0      # degrees per second
+DOT_DIAMETER     <-  8.6     # minutes
+DOT_SPEED        <- 2.735    # degrees per second
 
 SCREEN_WIDTH     <- 980/2  # pixels
 SCREEN_HEIGHT    <- 560    # pixels
@@ -123,7 +123,7 @@ initialDotList <- function() { return(lapply(1:NUM_DOTS, function(i) chooseRando
 # fractionSignal - b/w 0 and 1
 # orient - degrees.
 ########################################################
-writeFrame <- function(dots, fractionSignal, orient) {
+writeFrame <- function(dots, fractionSignal, orient, filename) {
     orientRad <- orient*pi/180
     n         <- length(dots)
     numS      <- round(fractionSignal * n)
@@ -150,7 +150,7 @@ writeFrame <- function(dots, fractionSignal, orient) {
         image <- drawDot(dots[[i]][1],dots[[i]][2],image)
     }
 
-    printPGM(image)
+    savePGM(image, filename, paste("#",dots, fractionSignal, orient))
 
     return(dots)
 }
@@ -170,7 +170,7 @@ if (length(commandArgs()) != 7) {
     fractionSignal <- as.numeric(commandArgs()[4])
     orient         <- as.numeric(commandArgs()[5])
     dirPrefix      <- commandArgs()[6]
-    numberRepeats  <- as.numeric(commandArgs()[7])
+    numberRepeats  <- as.numeric(commandArgs()[7])   # ignored
 
     dots <- initialDotList()
     for(frame in 1:NUM_FRAMES) 
@@ -179,4 +179,3 @@ if (length(commandArgs()) != 7) {
 
 if (grep("package:Rmpi",search()) != 0)
    mpi.quit()
-
